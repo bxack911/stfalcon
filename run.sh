@@ -10,7 +10,7 @@ NORMAL=$(tput sgr0)
 NOW=$(date +"%Y-%m-%d %H:%M:%S")
 APP_DIR="./"
 
-if [ ! -e "./.env"  ]; then cp -n ./.env.dist .env ; fi
+if [ ! -e "./.env.local"  ]; then cp -n ./.env.local.example .env.local ; fi
 source .env
 
 getDockerComposeCommandName() {
@@ -60,39 +60,43 @@ do
         fi
         echo -e
 
-        cp -n ./.env.dist ./.env &&
+        cp -n ./.env.local.example ./.env.local &&
         echo -e "${BOLD}Configure environment parameters on your needs in .env file${NC}${NORMAL}" &&
         read -p "Press 'Enter' after complete" &&
         source .env &&
         echo -e "${GREEN}OK${NORMAL}" &&
         echo &&
 
-        echo -e "${BOLD}Docker compose up${NC}${NORMAL}" &&
-        $(getDockerComposeCommandName) down &> /dev/null &&
-        $(getDockerComposeCommandName) up -d &&
+        echo -e "${BOLD}Creating composer cache directory${NC}${NORMAL}" &&
+        cd docker &&
+        mkdir composer_cache &&
+        cd ../
         echo -e "${GREEN}Done${NORMAL}" &&
         echo &&
 
-        ./run.sh -m &&
-        ./run.sh -s &&
+        echo -e "${BOLD}Docker compose up${NC}${NORMAL}" &&
+        ./run.sh -u &&
+        echo -e "${GREEN}Done${NORMAL}" &&
+        echo &&
+
+        echo -e "${GREEN}Composer installation${NORMAL}" &&
+        $(getDockerComposeCommandName) exec php composer install &&
+        $(getDockerComposeCommandName) exec php composer dump-env &&
 
         EXEC_TIME=$(printf "%dh:%dm:%ds\n" $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))) &&
         NOW=$(date +"%Y-%m-%d %H:%M:%S") &&
 
         echo -e "${GREEN}${BOLD}Setup script finished at ${NOW} ${NORMAL}" &&
         echo -e "${BOLD}Total execution time: ${EXEC_TIME}${NORMAL}" &&
-        echo -e
+        echo -e "${BOLD}Run bin/console app:parse-bank --bank=mono to parse exchange rates from monobank" &&
+        echo -e &&
+        $(getDockerComposeCommandName) exec php bash
         ;;
       #
     "c")
         echo -e "${BOLD}Cache clear${NC}${NORMAL}"
         docker exec -t  stfalcon-php bin/console cache:clear --env=${APP_ENV}
         echo -e "${GREEN}Done${NORMAL}"
-        echo
-        ;;
-    "m")
-        echo -e "${BOLD}Migrations up${NC}${NORMAL}"
-        docker exec -t stfalcon-php bin/console d:m:migrate -n
         echo
         ;;
     "u")

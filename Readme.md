@@ -4,6 +4,10 @@ Every 12 hours you'll receive email if monobank/privatbank currencies will be le
 
 ## Installation
 
-Run ```./run.sh -i and foolow instructions```
+Clone project ```git clone https://github.com/bxack911/stfalcon.git```
+
+Go to working directory ```cd stfalcon```
+
+Run ```./run.sh -i``` and foolow instructions
 
 Command work in the cron.
