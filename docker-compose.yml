@@ -1,0 +1,72 @@
+version: "3.5"
+
+networks:
+  backend:
+    name: stfalcon-backend
+
+services:
+  php:
+    container_name: 'stfalcon-php'
+    build:
+      context: docker
+      target: php
+      args:
+        - SYSTEM_USER_ID=${SYSTEM_USER_ID}
+        - SYSTEM_GROUP_ID=${SYSTEM_GROUP_ID}
+    volumes:
+      - ./:/var/www/html
+      - ${COMPOSER_CACHE_PATH}:/var/www/.composer
+    depends_on:
+      - mysql
+      - mongodb
+      - redis
+    links:
+      - redis
+    restart: unless-stopped
+    environment:
+      - PHP_DATE_TIME_ZONE=${PHP_DATE_TIME_ZONE:-Europe/Kiev}
+      - SYMFONY_ENV=${APP_ENV:-prod}
+      - COMPOSER_HOME=/var/www/.composer
+    user: ${SYSTEM_USER_ID}:${SYSTEM_GROUP_ID}
+    networks:
+      - backend
+
+  crontab:
+    container_name: 'stfalcon-cron'
+    build:
+      context: docker
+      target: cron
+      args:
+        - SYSTEM_USER_ID=${SYSTEM_USER_ID}
+        - SYSTEM_GROUP_ID=${SYSTEM_GROUP_ID}
+    volumes:
+      - ./:/var/www/html
+      - ./docker/crond/run:/var/run:rw
+      - ./docker/crond/logs:/var/log/supervisor:rw
+      - ${COMPOSER_CACHE_PATH}:/var/www/.composer
+    restart: unless-stopped
+    environment:
+      - PHP_DATE_TIME_ZONE=${PHP_DATE_TIME_ZONE:-Europe/Kiev}
+      - COMPOSER_HOME=/var/www/.composer
+    networks:
+      - backend
+
+  redis:
+    image: redis:7.2
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    volumes:
+      - ./docker/redis/data:/data
+    user: ${SYSTEM_USER_ID}:${SYSTEM_GROUP_ID}
+    networks:
+      - backend
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - backend
+

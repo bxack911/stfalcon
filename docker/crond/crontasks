@@ -1,0 +1,6 @@
+# *** CRON JOBS *****
+
+0 */11 * * */usr/local/bin/php /var/www/html/bin/console app:parse-bank --bank=privat --env=prod >> /var/www/html/var/logs/cron_stfalcon.log 2>&1
+0 */12 * * * /usr/local/bin/php /var/www/html/bin/console app:parse-bank --bank=mono --env=prod >> /var/www/html/var/logs/cron_stfalcon.log 2>&1
+
+# Don't remove the empty line at the end of this file. It is required to run the cron job

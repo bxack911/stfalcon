@@ -1,0 +1,53 @@
+{
+    "name": "stfalcon/symfony-ua-banks-currencies-notifier",
+    "license": "MIT",
+    "type": "project",
+    "description": "The \"Symfony Console Standard Edition\" distribution",
+    "require": {
+        "php": "^8.1",
+        "symfony/skeleton": "7.0.*",
+        "symfony/console": "7.0.*",
+        "guzzlehttp/guzzle": "^7.8",
+        "symfony/runtime": "7.0.*",
+        "symfony/monolog-bundle": "^3.10",
+        "symfony/flex": "^2.4",
+        "symfony/yaml": "7.0.*",
+        "symfony/dependency-injection": "7.0.*",
+        "symfony/config": "7.0.*",
+        "symfony/http-kernel": "7.0.*",
+        "symfony/framework-bundle": "7.0.*",
+        "symfony/dotenv": "7.0.*",
+        "predis/predis": "^2.2",
+        "snc/redis-bundle": "^4.7",
+        "symfony/serializer": "7.0.*",
+        "phpdocumentor/reflection-docblock": "^5.3",
+        "phpstan/phpdoc-parser": "^1.25",
+        "symfony/property-access": "7.0.*",
+        "symfony/property-info": "7.0.*",
+        "symfony/mailer": "7.0.*",
+        "symfony/google-mailer": "7.0.*"
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/flex": true,
+            "symfony/runtime": true
+        }
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": false,
+            "require": "7.0.*"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "scripts": {
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        }
+    }
+}

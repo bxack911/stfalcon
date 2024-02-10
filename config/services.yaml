@@ -1,0 +1,35 @@
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    App\Command\ParseBank:
+        arguments:
+            $recipientEmail: '%env(RECIPIENT_ADDRESS)%'
+            $senderEmail: '%env(SENDER_ADDRESS)%'
+
+    App\Service\CurrenciesService:
+        arguments:
+            $redis: '@snc_redis.default'
+
+    App\Service\CurrenciesParsers\MonobankParser:
+        arguments:
+            $serializer: '@serializer'
+
+    App\Service\CurrenciesParsers\PrivatbankParser:
+        arguments:
+            $serializer: '@serializer'
+
+    App\Service\BankCurrenciesParserStrategy:
+        calls:
+            - [addBankCurrenciesParserStrategy, ['@App\Service\CurrenciesParsers\MonobankParser']]
+            - [addBankCurrenciesParserStrategy, ['@App\Service\CurrenciesParsers\PrivatbankParser']]

@@ -1,0 +1,15 @@
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+/docker/redis/data
+/docker/composer_cache
+/docker/crond/logs
+/docker/crond/run
+.idea
+###< symfony/framework-bundle ###
